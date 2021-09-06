@@ -6,7 +6,6 @@ namespace EmployedTime.common.Models
 {
     public class ConsolitedTime
     {
-        public int Id { get; set; }
 
         public DateTime Fecha { get; set; }
 

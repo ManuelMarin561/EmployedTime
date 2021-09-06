@@ -8,8 +8,6 @@ namespace EmployedTime.Functions.Entities
     public class EmployedTimeEntity : TableEntity
     {
 
-        public int Id { get; set; }
-
         public DateTime Fecha { get; set; }
 
         public int Tipo { get; set; }
