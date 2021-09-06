@@ -7,6 +7,8 @@ namespace EmployedTime.Functions.Entities
 {
     public class ConsolitedTime : TableEntity
     {
+
+        public int IdEmployeed { get; set; }
         public DateTime Fecha { get; set; }
 
         public double MinTrabajados { get; set; }

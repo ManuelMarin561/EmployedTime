@@ -42,6 +42,7 @@ namespace EmployedTime.Functions.Funtions
                 ETag = "*",
                 PartitionKey = "EmployedTime",
                 RowKey = Guid.NewGuid().ToString(),
+                IdEmployeed = employedTime.IdEmployeed,
                 Tipo = employedTime.Tipo
             };
 
@@ -111,6 +112,63 @@ namespace EmployedTime.Functions.Funtions
                 Result = employedTimeEntity
             });
         }
+
+
+
+      [FunctionName(nameof(GetAllEmployedTime))]
+        public static async Task<IActionResult> GetAllEmployedTime(
+      [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "EmployedTime")] HttpRequest req,
+      [Table("EmployedTime", Connection = "AzureWebJobsStorage")] CloudTable EmployedTimeTable,
+      ILogger log)
+        {
+            log.LogInformation("Get all employed time received");
+
+            TableQuery<EmployedTimeEntity> query = new TableQuery<EmployedTimeEntity>();
+            TableQuerySegment<EmployedTimeEntity> employedTimes = await EmployedTimeTable.ExecuteQuerySegmentedAsync(query,null);
+
+            string message = "Retrieved all employed times";
+            log.LogInformation(message);
+
+            return new OkObjectResult(new common.Responses.Response
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = employedTimes
+            });
+        }
+
+
+
+        [FunctionName(nameof(GetEmployedTimeById))]
+        public static async Task<IActionResult> GetEmployedTimeById(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "EmployedTime/{id}")] HttpRequest req,
+        [Table("EmployedTime","EmployedTime","{id}",Connection = "AzureWebJobsStorage")] EmployedTimeEntity employedTimeEntity,
+        string id,
+        ILogger log)
+        {
+            log.LogInformation($"Get employed time by id: {id}, received.");
+
+            if (employedTimeEntity == null)
+            {
+                return new BadRequestObjectResult(new common.Responses.Response
+                {
+                    IsSuccess = false,
+                    Message = "Employed Id not found."
+                });
+            }
+
+            string message = $"Employed time: {employedTimeEntity.RowKey}, retrieved.";
+            log.LogInformation(message);
+
+            return new OkObjectResult(new common.Responses.Response
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = employedTimeEntity
+            });
+        }
+
+
 
     }
 }

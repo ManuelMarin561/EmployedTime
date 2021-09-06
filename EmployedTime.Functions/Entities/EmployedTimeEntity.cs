@@ -7,11 +7,9 @@ namespace EmployedTime.Functions.Entities
 {
     public class EmployedTimeEntity : TableEntity
     {
-
+        public int IdEmployeed { get; set; }
         public DateTime Fecha { get; set; }
-
         public int Tipo { get; set; }
-
         public bool Consolidado { get; set; }
 
     }
