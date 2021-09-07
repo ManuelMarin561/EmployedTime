@@ -8,7 +8,6 @@ namespace EmployedTime.common.Models
     {
         public int IdEmployeed { get; set; }
         public DateTime Fecha { get; set; }
-
         public double MinTrabajados { get; set; }
 
     }

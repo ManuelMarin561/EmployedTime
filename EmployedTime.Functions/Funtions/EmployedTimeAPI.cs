@@ -92,12 +92,8 @@ namespace EmployedTime.Functions.Funtions
 
             EmployedTimeEntity employedTimeEntity = (EmployedTimeEntity)findResult.Result;
 
-            if (!string.IsNullOrEmpty(employedTime.Fecha.ToString()))
-            {
-                employedTimeEntity.Fecha = employedTime.Fecha;
-                employedTimeEntity.Tipo = employedTime.Tipo;
-
-            }
+                employedTimeEntity.Consolidado = employedTime.Consolidado;
+            
 
             TableOperation addOperation = TableOperation.Replace(employedTimeEntity);
             await EmployedTimeTable.ExecuteAsync(addOperation);
@@ -167,6 +163,43 @@ namespace EmployedTime.Functions.Funtions
                 Result = employedTimeEntity
             });
         }
+
+
+
+
+        [FunctionName(nameof(DeleteEmployedTimeById))]
+        public static async Task<IActionResult> DeleteEmployedTimeById(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "EmployedTime/{id}")] HttpRequest req,
+        [Table("EmployedTime", "EmployedTime", "{id}", Connection = "AzureWebJobsStorage")] EmployedTimeEntity employedTimeEntity,
+        [Table("EmployedTime", Connection = "AzureWebJobsStorage")] CloudTable EmployedTimeTable,
+        string id,
+        ILogger log)
+        {
+            log.LogInformation($"Deelete employed time by id: {id}, received.");
+
+            if (employedTimeEntity == null)
+            {
+                return new BadRequestObjectResult(new common.Responses.Response
+                {
+                    IsSuccess = false,
+                    Message = "Employed Id not found."
+                });
+            }
+
+
+            await EmployedTimeTable.ExecuteAsync(TableOperation.Delete(employedTimeEntity));
+
+            string message = $"Employed time: {employedTimeEntity.RowKey}, deleted.";
+            log.LogInformation(message);
+
+            return new OkObjectResult(new common.Responses.Response
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = employedTimeEntity
+            });
+        }
+
 
 
 
