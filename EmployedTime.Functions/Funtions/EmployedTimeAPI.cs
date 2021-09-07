@@ -202,6 +202,30 @@ namespace EmployedTime.Functions.Funtions
 
 
 
+        [FunctionName(nameof(GetConsolidatedTime))]
+        public static async Task<IActionResult> GetConsolidatedTime(
+          [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "consolidated/{date}")] HttpRequest req,
+          [Table("ConsolitedTime", Connection = "AzureWebJobsStorage")] CloudTable ConsolitedTimeTable,
+          DateTime date,
+          ILogger log)
+        {
+            string filter = TableQuery.GenerateFilterConditionForDate("Fecha", QueryComparisons.Equal, date);
+
+            TableQuery<ConsolitedTimeEntity> query = new TableQuery<ConsolitedTimeEntity>().Where(filter);
+            TableQuerySegment<ConsolitedTimeEntity> consolitedTimes = await ConsolitedTimeTable.ExecuteQuerySegmentedAsync(query, null);
+
+            string message = $"Get all consolidated by date: {date}";
+            log.LogInformation(message);
+
+            return new OkObjectResult(new common.Responses.Response
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = consolitedTimes
+            });
+        }
+
+
 
     }
 }

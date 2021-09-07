@@ -9,7 +9,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EmployedTime.common\EmployedTime.common.csproj" />
-    <ProjectReference Include="..\EmployedTime.Test\EmployedTime.Test.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

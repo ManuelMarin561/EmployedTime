@@ -98,6 +98,8 @@ namespace EmployedTime.Functions.Funtions
 
 
                 }
+
+                log.LogInformation($"Processing time consolidation at: {DateTime.Now}");
             }
 
 
